@@ -21,7 +21,7 @@ public class BroadcastServiceImpl implements BroadcastService {
         String url = "http://api.weatherapi.com/v1/current.json?key=d552bebfbf824377a3f71630241008&q="+params+"&aqi=no";
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
-                .method("GET", HttpRequest.BodyPublishers.noBody())
+                .GET()
                 .build();
         HttpResponse<String> response = null;
         try{
