@@ -14,7 +14,12 @@ public class Broadcast {
     BroadcastServiceImpl broadcastService;
 
     @RequestMapping(value = "/weather/{city}", method = RequestMethod.GET)
-    public ResponseEntity<Weather> getWeather(@PathVariable String city) {
-        return broadcastService.getBroadcastUpdate(city);
+    public ResponseEntity<Weather> getWeather(@PathVariable String city) throws Exception {
+        try{
+            Weather weatherUpdate = broadcastService.getBroadcastUpdate(city);
+            return ResponseEntity.ok(weatherUpdate);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
     }
 }

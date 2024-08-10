@@ -17,24 +17,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class BroadcastServiceImpl implements BroadcastService {
     @Override
-    public ResponseEntity<Weather> getBroadcastUpdate(String city) {
-        String url = "http://api.weatherapi.com/v1/current.json?key=d552bebfbf824377a3f71630241008&q="+city+"&aqi=no";
+    public Weather getBroadcastUpdate(String params) throws Exception {
+        String url = "http://api.weatherapi.com/v1/current.json?key=d552bebfbf824377a3f71630241008&q="+params+"&aqi=no";
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .method("GET", HttpRequest.BodyPublishers.noBody())
                 .build();
         HttpResponse<String> response = null;
-
         try{
             response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-            Weather data = createResponse(response);
-            return ResponseEntity.ok(data);
+            return createResponse(response);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new Exception(e.getMessage());
         }
-
-        System.out.println(response);
-        return null;
     }
 
     private Weather createResponse(HttpResponse<String> response) throws JsonProcessingException {
@@ -42,6 +37,13 @@ public class BroadcastServiceImpl implements BroadcastService {
         JsonNode node = mapper.readTree(response.body());
         String cityName = node.get("location").get("name").asText();
         float temp = node.get("current").get("temp_c").floatValue();
-        return new Weather(cityName, temp);
+        String region = node.get("location").get("region").asText();
+        String country = node.get("location").get("country").asText();
+        String dateTime = node.get("current").get("last_updated").asText();
+        String condition = node.get("current").get("condition").get("text").asText();
+        float humidity = node.get("current").get("humidity").floatValue();
+        float feelsLike = node.get("current").get("feelslike_c").floatValue();
+        String icon = node.get("current").get("condition").get("icon").asText();
+        return new Weather(cityName, temp, region, country, dateTime, condition, icon, humidity, feelsLike);
     }
 }

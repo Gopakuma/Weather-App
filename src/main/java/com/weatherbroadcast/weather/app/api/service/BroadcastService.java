@@ -6,5 +6,5 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface BroadcastService {
-    ResponseEntity<Weather> getBroadcastUpdate(String city);
+    Weather getBroadcastUpdate(String city) throws Exception;
 }
